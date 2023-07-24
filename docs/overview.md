@@ -14,6 +14,8 @@ This package provides a class decorator for defining
 - **Concision.** Constructors are specified via class annotations,
   allowing for syntax comparable to Rust's `enum`s:
   ```python
+  from adt import adt
+
   @adt
   class Event:
       MouseClick: [int, int]
