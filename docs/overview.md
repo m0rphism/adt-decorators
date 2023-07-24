@@ -54,7 +54,7 @@ pip install adt-decorators
   if event.is_mouse_click():
       print(f"Clicked at ({event._1}, {event._2}).")
   elif event.is_key_press():
-      print(f"Pressed key {event.key}.mods}.")
+      print(f"Pressed key {event.key}.")
   ```
 
 - **Constructors are dataclasses that inherit from the decorated type.**
@@ -73,7 +73,7 @@ pip install adt-decorators
       def print(self):
           match self:
               MouseClick(x, y):    print(f"Clicked at ({event._1}, {event._2}).")
-              KeyPress(key, mods): print(f"Pressed key {event.key}.mods}.")
+              KeyPress(key, mods): print(f"Pressed key {event.key}.")
 
   Event.MouseClick(5, 10).print()
   ```
