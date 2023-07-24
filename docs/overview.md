@@ -6,6 +6,17 @@ This package provides a class decorator for defining
 [OCaml](https://cs3110.github.io/textbook/chapters/data/algebraic_data_types.html) (`type`), and
 [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html) (`enum`).
 
+[//]: # (INSTALL_BEGIN)
+## Installation
+
+The package is on [PyPI](https://pypi.org/project/adt-decorators/)
+and [github](https://github.com/m0rphism/adt-decorators)
+and can be installed via
+```bash
+pip install adt-decorators
+```
+[//]: # (INSTALL_END)
+
 ## Features
 
 - **Simplicity.** This package exports only a single definition: the
@@ -23,7 +34,7 @@ This package provides a class decorator for defining
       KeyPress:   {'key': str, 'modifiers': list[str]}
   ```
 
-- **Pattern Matching.** Python's [pattern matching](https://peps.python.org/pep-0636/) via `match` is fully supported (Python >= 3.10).
+- **Pattern Matching** via [`match`](https://peps.python.org/pep-0636/) is fully supported (Python >= 3.10):
   ```python
   event = Event.KeyPress(key='a', modifiers=['shift'])
   match event:
@@ -31,15 +42,14 @@ This package provides a class decorator for defining
       case Event.KeyPress(key, mods): print(f"Pressed key {key}.")
   ```
 
--   **Support for both named and unnamed constructor fields.** Constructors with
+-   **Named and unnamed constructor fields** are supported:
 
-    - named fields, like `KeyPress`, are specified as a `dict[str, type]`;
-    - unnamed fields, like `MouseClick`,  are specified as a `list[type]`;
-    - a single unnamed field, can also be specified as a `type`;
-    - no fields, are specified as the empty list.
+    - Constructors with named fields, like `KeyPress`, are specified as a `dict[str, type]`;
+    - Constructors with unnamed fields, like `MouseClick`,  are specified as a `list[type]`;
+    - Constructors with a single unnamed field, can also be specified as a `type`;
+    - Constructors with no fields, are specified as the empty list.
 
-- **Getters, Setters, and Instance-Checking.** As an alternative to pattern matching, getter,
-  setter, and instance-checking methods are derived, e.g.
+- **Getters, Setters, and Instance-Checking** methods are derived as an alternative to pattern matching, e.g.
   ```python
   if event.is_mouse_click():
       print(f"Clicked at ({event._1}, {event._2}).")
@@ -47,23 +57,38 @@ This package provides a class decorator for defining
       print(f"Pressed key {event.key}.mods}.")
   ```
 
-- **Constructors are derived as subclasses of the decorated type and
-   are themselves decorated with
-   [`dataclass`](https://docs.python.org/3/library/dataclasses.html).**
-  This derives lots of useful method implementations, e.g. structural
-  equality, string-conversion, and ordering.
-
-- **Constructors are namespaced into the ADT class, but can also be additionally exported:**
+- **Constructors are dataclasses that inherit from the decorated type.**
+  The [`dataclass`](https://docs.python.org/3/library/dataclasses.html)
+  decorator derives many useful method implementations,
+  e.g. structural equality and string-conversion.
+  Making the constructors inherit from the decorated class, allows to
+  define methods with pattern matching directly in the decorated class
+  and call them on objects of the constructor classes:
   ```python
-  @adt(export=True)  # <-- No more `Event.` prefixing required.
+  @adt
   class Event:
       MouseClick: [int, int]
       KeyPress:   {'key': str, 'modifiers': list[str]}
       
       def print(self):
           match self:
-              MouseClick(x, y):    ... # <-- As promised, no `Event.MouseClick`!
-              KeyPress(key, mods): ... # <-- As promised, no `Event.KeyPress`!
+              MouseClick(x, y):    print(f"Clicked at ({event._1}, {event._2}).")
+              KeyPress(key, mods): print(f"Pressed key {event.key}.mods}.")
+
+  Event.MouseClick(5, 10).print()
+  ```
+
+- **Constructors can be exported into the global namespace.**
+  ```python
+  @adt(export=True)  # <-- Makes `Event.` prefixes optional for constructors.
+  class Event:
+      MouseClick: [int, int]
+      KeyPress:   {'key': str, 'modifiers': list[str]}
+      
+      def print(self):
+          match self:
+              MouseClick(x, y):    ... # <-- As promised: no `Event.MouseClick`!
+              KeyPress(key, mods): ... # <-- As promised: no `Event.KeyPress`!
   ```
 
 
@@ -90,17 +115,17 @@ class Event:
         return isinstance(self, KeyPress)
 
 @dataclass
-class MouseClick(Expr):
+class MouseClick(Event):
   _1: int
   _2: int
 
 @dataclass
-class KeyPress(Expr):
+class KeyPress(Event):
   key: str
   modifiers: list[str]
 
-Expr.MouseClick = MouseClick
-Expr.KeyPress   = KeyPress
+Event.MouseClick = MouseClick
+Event.KeyPress   = KeyPress
 if not export:
     del MouseClick
     del KeyPress
