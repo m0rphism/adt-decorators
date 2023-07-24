@@ -72,8 +72,8 @@ pip install adt-decorators
       
       def print(self):
           match self:
-              MouseClick(x, y):    print(f"Clicked at ({event._1}, {event._2}).")
-              KeyPress(key, mods): print(f"Pressed key {event.key}.")
+              case MouseClick(x, y):    print(f"Clicked at ({event._1}, {event._2}).")
+              case KeyPress(key, mods): print(f"Pressed key {event.key}.")
 
   Event.MouseClick(5, 10).print()
   ```
@@ -87,8 +87,8 @@ pip install adt-decorators
       
       def print(self):
           match self:
-              MouseClick(x, y):    ... # <-- As promised: no `Event.MouseClick`!
-              KeyPress(key, mods): ... # <-- As promised: no `Event.KeyPress`!
+              case MouseClick(x, y):    ... # <-- As promised: no `Event.MouseClick`!
+              case KeyPress(key, mods): ... # <-- As promised: no `Event.KeyPress`!
   ```
 
 
