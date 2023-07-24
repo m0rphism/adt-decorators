@@ -109,10 +109,10 @@ class Event:
             "Tried to construct an ADT instead of one of it's constructors.")
 
     def is_mouse_click(self) -> bool:
-        return isinstance(self, MouseClick)
+        return isinstance(self, Event.MouseClick)
 
     def is_key_press(self) -> bool:
-        return isinstance(self, KeyPress)
+        return isinstance(self, Event.KeyPress)
 
 @dataclass
 class MouseClick(Event):
