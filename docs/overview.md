@@ -46,8 +46,8 @@ pip install adt-decorators
 
     - Constructors with named fields, like `KeyPress`, are specified as a `dict[str, type]`;
     - Constructors with unnamed fields, like `MouseClick`,  are specified as a `list[type]`;
-    - Constructors with a single unnamed field, can also be specified as a `type`;
-    - Constructors with no fields, are specified as the empty list.
+    - Constructors with a single unnamed field can also be specified as a `type`;
+    - Constructors with no fields are specified as the empty list.
 
 - **Getters, Setters, and Instance-Checking** methods are derived as an alternative to pattern matching, e.g.
   ```python
