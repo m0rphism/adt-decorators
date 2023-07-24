@@ -9,13 +9,14 @@ This package provides a class decorator for defining
 ## Features
 
 - **Simplicity.** This package exports only a single definition: the
-  [`adt`](../reference/#adt.adt) class decorator.
+  [`adt`](../reference/#adt.adt) class decorator:
+  ```python
+  from adt import adt
+  ```
 
 - **Concision.** Constructors are specified via class annotations,
   allowing for syntax comparable to Rust's `enum`s:
   ```python
-  from adt import adt
-
   @adt
   class Event:
       MouseClick: [int, int]
