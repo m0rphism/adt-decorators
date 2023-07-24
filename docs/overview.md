@@ -91,6 +91,13 @@ pip install adt-decorators
               case KeyPress(key, mods): ... # <-- As promised: no `Event.KeyPress`!
   ```
 
+- **Reflection.**
+  The decorated class has a static field `constructors: dict[str, type]`
+  which maps the constructor names to their classes, e.g.
+  ```python
+  key_event = Event.constructors['KeyPress'](key='a', modifiers=['shift'])
+  ```
+
 
 ## Translation
 
@@ -129,6 +136,11 @@ Event.KeyPress   = KeyPress
 if not export:
     del MouseClick
     del KeyPress
+
+Event.constructors = {
+    'MouseClick': Event.MouseClick,
+    'KeyPress': Event.KeyPress,
+}
 ```
 
 ## Related packages

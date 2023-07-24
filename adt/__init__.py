@@ -1,7 +1,7 @@
 """Provides class decorators for Algebraic Data Types (ADTs)
 """
 
-__version__ = "0.2.8"
+__version__ = "0.2.9"
 __author__ = 'Hannes Saffrich'
 
 from dataclasses import dataclass
@@ -63,6 +63,7 @@ def adt_with(export_cons: bool):
         def Base_init(self, *args, **kwargs):
             raise TypeError(f"Tryed to construct an ADT instead of one of it's constructor.")
         Base.__init__ = Base_init
+        Base.constructors = dict()
 
         for con_name, con_ty in annotations.items():
             if type(con_ty) == dict:
@@ -76,6 +77,7 @@ def adt_with(export_cons: bool):
 
             Con = dataclass(type(con_name, (Base, ), { "__annotations__": params }))
             setattr(Base, con_name, Con)
+            Base.constructors[con_name] = Con
 
             def is_con_gen(Con):
                 def is_con(self) -> bool:
