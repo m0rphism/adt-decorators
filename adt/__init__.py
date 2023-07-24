@@ -1,10 +1,52 @@
+"""Provides class decorators for Algebraic Data Types (ADTs)
+"""
+
+__version__ = "0.1.0"
+__author__ = 'Hannes Saffrich'
+
 from dataclasses import dataclass
 import inspect
 
 def adt(Base):
+    """Class-decorator for Algebraic Data Types (ADTs), which defines the constructors as static fields of the base type.
+
+    Examples:
+        >>> @adt
+        ... class Expr:
+        ...     Var: str                           # Single Unnamed Con Arg
+        ...     Abs: [str, 'Expr']                 # Multiple Unnamed Con Args
+        ...     App: {'e1': 'Expr', 'e2': 'Expr'}  # Multiple Named Con Args
+        ... 
+        ...     def __str__(self) -> str:
+        ...         match self:
+        ...             case Expr.Var(x):      return x
+        ...             case Expr.Abs(x, e):   return f"(λ{x}. {e})"
+        ...             case Expr.App(e1, e2): return f"({e1} {e2})"
+        >>> id_expr = Expr.Abs("x", Expr.Var("x"))
+        >>> str(id_expr)
+        '(λx. x)'
+    """
     return adt_with(export_cons=False)(Base)
 
 def adt_export(Base):
+    """Class-decorator for Algebraic Data Types (ADTs), which defines the Constructors as static fields of the base type and on the top-level.
+
+    Examples:
+        >>> @adt_export
+        ... class Expr:
+        ...     Var: str                           # Single Unnamed Con Arg
+        ...     Abs: [str, 'Expr']                 # Multiple Unnamed Con Args
+        ...     App: {'e1': 'Expr', 'e2': 'Expr'}  # Multiple Named Con Args
+        ... 
+        ...     def __str__(self) -> str:
+        ...         match self:
+        ...             case Var(x):      return x
+        ...             case Abs(x, e):   return f"(λ{x}. {e})"
+        ...             case App(e1, e2): return f"({e1} {e2})"
+        >>> id_expr = Abs("x", Var("x"))
+        >>> str(id_expr)
+        '(λx. x)'
+    """
     return adt_with(export_cons=True)(Base)
 
 def adt_with(export_cons: bool):
