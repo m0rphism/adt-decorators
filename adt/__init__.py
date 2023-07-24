@@ -1,7 +1,7 @@
 """Provides class decorators for Algebraic Data Types (ADTs)
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = 'Hannes Saffrich'
 
 from dataclasses import dataclass

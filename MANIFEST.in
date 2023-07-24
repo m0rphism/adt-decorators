@@ -1,0 +1,3 @@
+include docs/overview.md
+include docs/reference.md
+include mkdocs.yml
