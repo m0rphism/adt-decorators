@@ -6,11 +6,11 @@ with open('docs/overview.md', 'r') as f:
     skip_end = "[//]: # (INSTALL_END)"
     begin = desc.find(skip_start)
     end = desc.find(skip_end) + len(skip_end)
-    desc = desc[begin:end]
+    desc = desc[:begin] + desc[end:]
 
 setup(
     name='adt-decorators',
-    version='0.2.3',
+    version='0.2.4',
     description='Algebraic Data Types via Class Decorators',
     long_description=desc,
     long_description_content_type='text/markdown',
