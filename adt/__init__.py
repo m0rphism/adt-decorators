@@ -1,14 +1,25 @@
 """Provides class decorators for Algebraic Data Types (ADTs)
 """
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 __author__ = 'Hannes Saffrich'
 
 from dataclasses import dataclass
 import inspect
 
-def adt(Base):
-    """Class-decorator for Algebraic Data Types (ADTs), which defines the constructors as static fields of the base type.
+def adt(Class=None, export=False):
+    """Class-decorator for Algebraic Data Types (ADTs).
+
+    This function is overloaded to allow both `@adt` and
+    `@adt(OPTIONS)` annotations. In the case of `@adt` only the
+    `Class` argument is supplied and the decorator is *called*;
+     in the case of `@adt(export=True)` only the other arguments are
+     supplied and the decorator is *returned*.
+
+    Arguments:
+        export:
+            if `False`, only define the constructor classes as fields of the decorated class;
+            if `True`, also define the constructor classes in the global namespace.
 
     Examples:
         >>> @adt
@@ -25,14 +36,8 @@ def adt(Base):
         >>> id_expr = Expr.Abs("x", Expr.Var("x"))
         >>> str(id_expr)
         '(λx. x)'
-    """
-    return adt_with(export_cons=False)(Base)
 
-def adt_export(Base):
-    """Class-decorator for Algebraic Data Types (ADTs), which defines the Constructors as static fields of the base type and on the top-level.
-
-    Examples:
-        >>> @adt_export
+        >>> @adt(export=True)
         ... class Expr:
         ...     Var: str                           # Single Unnamed Con Arg
         ...     Abs: [str, 'Expr']                 # Multiple Unnamed Con Args
@@ -47,7 +52,8 @@ def adt_export(Base):
         >>> str(id_expr)
         '(λx. x)'
     """
-    return adt_with(export_cons=True)(Base)
+    decorator = adt_with(export)
+    return decorator if Class is None else decorator(Class)
 
 def adt_with(export_cons: bool):
     def decorator(Base):

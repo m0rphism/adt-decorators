@@ -5,7 +5,7 @@ with open('docs/overview.md', 'r') as f:
 
 setup(
     name='adt-decorators',
-    version='0.1.1',    
+    version='0.2.0',    
     description='Algebraic Data Types via Class Decorators',
     long_description=desc,
     long_description_content_type='text/markdown',
