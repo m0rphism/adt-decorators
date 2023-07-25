@@ -91,6 +91,17 @@ pip install adt-decorators
               case KeyPress(key, mods): ... # <-- As promised: no `Event.KeyPress`!
   ```
 
+- **Constructor dataclass can have additional keywords arguments passed**
+  ```python
+  @adt(frozen=True)  # <-- Makes `Event.` prefixes optional for constructors.
+  class Event:
+      MouseClick: [int, int]
+      KeyPress:   {'key': str, 'modifiers': list[str]}
+      
+  event = Event.MouseClick(5, 10)
+  event._0 = 42 # Error! Constructor dataclass is frozen. 
+  ```
+
 - **Reflection.**
   The decorated class has a static field `constructors: dict[str, type]`
   which maps the constructor names to their classes, e.g.
