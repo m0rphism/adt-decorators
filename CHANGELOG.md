@@ -2,8 +2,8 @@
 
 *Note:* Versions, which are not listed here, contain only updates to the documentation.
 
-- **0.2.11** Added possibility to customize the arguments to the
-  `@dataclass` annotation for the constructor classes.
+- **0.2.11** Added possibility to customize the arguments used for the
+  `@dataclass` annotation for the generated constructor classes.
 
 - **0.2.9** Added basic reflection capabilities: Each class decorated
   with `@adt` has a static field `constructors: dict[str, type]`,
