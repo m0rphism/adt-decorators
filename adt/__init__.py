@@ -7,7 +7,7 @@ __author__ = 'Hannes Saffrich'
 from dataclasses import dataclass
 import inspect
 
-def adt(Class=None, export=False):
+def adt(Class=None, export=False, **kwargs):
     """Class-decorator for Algebraic Data Types (ADTs).
 
     This function is overloaded to allow both `@adt` and
@@ -20,6 +20,8 @@ def adt(Class=None, export=False):
         export:
             if `False`, only define the constructor classes as fields of the decorated class;
             if `True`, also define the constructor classes in the global namespace.
+        **kwargs: 
+            additional passed keyword arguments passed to dataclass decorator. 
 
     Examples:
         >>> @adt
@@ -51,11 +53,20 @@ def adt(Class=None, export=False):
         >>> id_expr = Abs("x", Var("x"))
         >>> str(id_expr)
         '(λx. x)'
+
+        >>> @adt(frozen=True)
+        ... class Expr:
+        ...     Var: str                           # Single Unnamed Con Arg
+        ...     Abs: [str, 'Expr']                 # Multiple Unnamed Con Args
+        ...     App: {'e1': 'Expr', 'e2': 'Expr'}  # Multiple Named Con Args
+        ... 
+        >>> var = Expr.Var("x")
+        >>> var._0 = "y" # error!
     """
-    decorator = adt_with(export)
+    decorator = adt_with(export, **kwargs)
     return decorator if Class is None else decorator(Class)
 
-def adt_with(export_cons: bool):
+def adt_with(export_cons: bool, **kwargs):
     def decorator(Base):
         annotations = vars(Base)["__annotations__"]
         Base.__annotations__ = dict()
@@ -73,9 +84,9 @@ def adt_with(export_cons: bool):
             elif type(con_ty) == type:
                 params = { "_1": con_ty }
             else:
-                raise TypeError(f"ADT with invalid constructor definition {con_name}: {ty}")
+                raise TypeError(f"ADT with invalid constructor definition {con_name}: {con_ty}")
 
-            Con = dataclass(type(con_name, (Base, ), { "__annotations__": params }))
+            Con = dataclass(type(con_name, (Base, ), { "__annotations__": params }), **kwargs)
             setattr(Base, con_name, Con)
             Base.constructors[con_name] = Con
 
