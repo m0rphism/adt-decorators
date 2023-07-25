@@ -57,10 +57,24 @@ pip install adt-decorators
       print(f"Pressed key {event.key}.")
   ```
 
-- **Constructors are dataclasses that inherit from the decorated type.**
-  The [`dataclass`](https://docs.python.org/3/library/dataclasses.html)
-  decorator derives many useful method implementations,
-  e.g. structural equality and string-conversion.
+-   **Constructors are customizable dataclasses.**
+    The [`dataclass`](https://docs.python.org/3/library/dataclasses.html)
+    decorator derives many useful method implementations,
+    e.g. structural equality and string-conversion.
+
+    Additonal keyword arguments to `adt` are forwarded as keyword
+    arguments to the `dataclass` annotations of all constructors:
+    ```python
+    @adt(frozen=True)  # <-- Use @dataclass(frozen=True) for all constructors.
+    class Event:
+        MouseClick: [int, int]
+        KeyPress:   {'key': str, 'modifiers': list[str]}
+
+    event = Event.MouseClick(5, 10)
+    event._0 = 42 # Error! Constructor dataclass is frozen. 
+    ```
+
+- **Constructors inherit from the decorated type.**
   Making the constructors inherit from the decorated class, allows to
   define methods with pattern matching directly in the decorated class
   and call them on objects of the constructor classes:
@@ -89,17 +103,6 @@ pip install adt-decorators
           match self:
               case MouseClick(x, y):    ... # <-- As promised: no `Event.MouseClick`!
               case KeyPress(key, mods): ... # <-- As promised: no `Event.KeyPress`!
-  ```
-
-- **Constructor dataclass can have additional keywords arguments passed**
-  ```python
-  @adt(frozen=True)  # <-- Makes `Event.` prefixes optional for constructors.
-  class Event:
-      MouseClick: [int, int]
-      KeyPress:   {'key': str, 'modifiers': list[str]}
-      
-  event = Event.MouseClick(5, 10)
-  event._0 = 42 # Error! Constructor dataclass is frozen. 
   ```
 
 - **Reflection.**
